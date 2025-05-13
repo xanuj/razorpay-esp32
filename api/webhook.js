@@ -1,13 +1,13 @@
 const crypto = require("crypto");
 const axios = require("axios");
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   if (req.method !== "POST") {
     return res.status(405).send("Method not allowed");
   }
 
   const RAZORPAY_WEBHOOK_SECRET = "helloworld";
-  const ESP32_URL = "http://<ESP32_IP>/success";
+  const ESP32_URL = "http://192.168.1.35/success"; // 🔁 Replace with your IP
 
   const signature = req.headers["x-razorpay-signature"];
   const body = JSON.stringify(req.body);
@@ -31,4 +31,4 @@ export default async function handler(req, res) {
   }
 
   res.status(200).send("Webhook processed");
-}
+};
