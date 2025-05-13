@@ -1,19 +1,20 @@
+// api/webhook.js
 const crypto = require("crypto");
 const axios = require("axios");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
-    return res.status(405).send("Method not allowed");
+    return res.status(405).send("Method Not Allowed");
   }
 
-  const RAZORPAY_WEBHOOK_SECRET = "helloworld";
-  const ESP32_URL = "http://192.168.1.35/success"; // 🔁 Replace with your IP
+  const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+  const esp32Url = "http://192.168.1.100/success"; // ⬅️ replace with ESP32 IP
 
   const signature = req.headers["x-razorpay-signature"];
   const body = JSON.stringify(req.body);
 
   const expectedSignature = crypto
-    .createHmac("sha256", RAZORPAY_WEBHOOK_SECRET)
+    .createHmac("sha256", secret)
     .update(body)
     .digest("hex");
 
@@ -23,12 +24,12 @@ module.exports = async (req, res) => {
 
   if (req.body.event === "payment_link.paid") {
     try {
-      await axios.get(ESP32_URL);
-      console.log("✅ ESP32 notified!");
-    } catch (error) {
-      console.error("❌ Failed to notify ESP32", error);
+      await axios.get(esp32Url);
+      console.log("✅ ESP32 Notified!");
+    } catch (err) {
+      console.error("❌ Failed to notify ESP32:", err);
     }
   }
 
-  res.status(200).send("Webhook processed");
+  return res.status(200).json({ status: "success" });
 };
