@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     return res.status(405).send("Method not allowed");
   }
 
-  const RAZORPAY_WEBHOOK_SECRET = "your-secret";
+  const RAZORPAY_WEBHOOK_SECRET = "helloworld";
   const ESP32_URL = "http://<ESP32_IP>/success";
 
   const signature = req.headers["x-razorpay-signature"];
